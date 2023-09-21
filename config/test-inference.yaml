@@ -1,0 +1,65 @@
+phase: test
+seed: 42
+work_dir: ./results/test-train
+weights: ./config/test-weights-20-2300.pt
+
+# feeder
+feeder: src.feeders.GASLFRDataset.GASLFRDataset
+test_feeder_args:
+  preprocess_cls: src.feeders.Preprocess.Preprocess
+  split_csv_fpath: ./data_gen/baseline/val_split.csv
+  max_phrase_len: 50
+  prep_max_seq_len: 128
+  prep_include_z: False
+  prep_include_vels: False
+  debug: False
+
+# model
+model: src.models.MARKSeq2Seq.Seq2Seq
+model_args:
+  seq_mask_nan: True
+
+encoder: src.models.encoders.MARK.Encoder
+encoder_args:
+  in_channels: 88
+  num_hid: 256
+  num_head: 8
+  num_feed_forward: 1024
+  num_layers: 2
+  learn_pos_enc: True
+  max_seq_len: 128
+  seq_emb_activation: gelu
+  seq_emb_init: xavier
+  seq_emb_learn_nan_emb: True
+  tformer_activation: gelu
+  tformer_init: xavier
+  tformer_ffn_dropout: 0.3
+
+decoder: src.models.decoders.MARK.Decoder
+decoder_args:
+  num_hid: 256
+  num_head: 8
+  num_feed_forward: 1024
+  num_layers: 2
+  num_classes: 62
+  max_phrase_length: 50
+  learn_pos_enc: True
+  tformer_activation: gelu
+  tformer_init: xavier
+  tformer_ffn_dropout: 0.3
+
+# optimizer
+optimizer: torch.optim.AdamW
+
+# loss
+loss_args:
+  label_smoothing: 0.1
+
+# training
+base_lr: 1.0e-4
+num_epoch: 100
+device: 3 #[0, 1, 2, 3]
+batch_size: 32
+forward_batch_size: 16
+test_batch_size: 32
+num_worker: 0

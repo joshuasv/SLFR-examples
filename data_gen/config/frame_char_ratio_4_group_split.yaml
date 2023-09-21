@@ -1,0 +1,5 @@
+val_n_samples: 4000
+test_n_samples: 4000
+valid_frame_char_ratio: 4
+group_split: True
+group_by: participant_id

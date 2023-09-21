@@ -1,0 +1,3 @@
+valid_frame_char_ratio: 4
+val_n_samples: 4000
+test_n_samples: 4000
